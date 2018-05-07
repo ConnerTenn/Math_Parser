@@ -8,3 +8,9 @@ all:
 run: all
 	$D/run.exe
 
+clean:
+	rm $D/*
+	
+force: clean all
+
+
