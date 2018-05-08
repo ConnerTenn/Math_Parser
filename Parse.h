@@ -18,13 +18,10 @@ void Num();
 void Add();
 void Sub();
 
-void Interpret(std::string line);
+void Parse(std::string line);
 
 extern void (* Func)();
 extern void (* LastFunc)();
-
-extern double Tot;
-extern double Acc;
 
 extern std::string String;
 extern u64 Index;

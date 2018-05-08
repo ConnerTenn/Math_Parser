@@ -16,15 +16,13 @@ void Start()
 {
 	std::cout << "Start::" << Curr << "\n";
 	
-	Tot = 0;
-	Acc = 0;
 	LastFunc = Start;
 	
-	if (Next = -1)
+	if (Next == -1)
 	{
 		Func = End;
 	}
-	else if (Next = ' ')
+	else if (Next == ' ')
 	{
 		Func = White;
 	}
@@ -62,11 +60,11 @@ void White()
 {
 	std::cout << "White::" << Curr << "\n";
 	
-	if (Next = -1)
+	if (Next == -1)
 	{
 		Func = End;
 	}
-	else if (Next = ' ')
+	else if (Next == ' ')
 	{
 		Func = White;
 	}
@@ -76,11 +74,11 @@ void Num()
 {
 	std::cout << "Num::" << Curr << "\n";
 	
-	if (Next = -1)
+	if (Next == -1)
 	{
 		Func = End;
 	}
-	else if (Next = ' ')
+	else if (Next == ' ')
 	{
 		Func = White;
 	}
@@ -90,11 +88,11 @@ void Add()
 {
 	std::cout << "Add::" << Curr << "\n";
 	
-	if (Next = -1)
+	if (Next == -1)
 	{
 		Func = End;
 	}
-	else if (Next = ' ')
+	else if (Next == ' ')
 	{
 		Func = White;
 	}
@@ -104,18 +102,18 @@ void Sub()
 {
 	std::cout << "Sub::" << Curr << "\n";
 	
-	if (Next = -1)
+	if (Next == -1)
 	{
 		Func = End;
 	}
-	else if (Next = ' ')
+	else if (Next == ' ')
 	{
 		Func = White;
 	}
 }
 
 
-void Interpret(std::string line)
+void Parse(std::string line)
 {
 	String = line;
 	Func = Start;

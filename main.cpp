@@ -1,5 +1,6 @@
 
 #include "Parse.h"
+#include "ReversePolish.h"
 
 
 int main()
@@ -7,9 +8,7 @@ int main()
 	bool run = true;
 	std::string line;
 	
-	Func = Start;
-	
-	while (run)
+	/*while (run)
 	{		
 		std::getline(std::cin, line);
 		
@@ -19,10 +18,17 @@ int main()
 		}
 		else
 		{
-			Interpret(line);
+			Parse(line);
 		}
 		
-	}
+	}*/
+	
+	std::cout << "\n";
+	
+	ElemList = { Elem(1, 4), Elem(1, 7), Elem(2, ADD), Elem(1, 2) , Elem(2, SUB) };
+	
+	
+	std::cout << "Result:" << Evaluate() << "\n";
 	
 	
 	
