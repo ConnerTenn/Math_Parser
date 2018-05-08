@@ -16,17 +16,21 @@ double Evaluate()
 		if (ElemList[i].Type == 2)
 		{
 			ope = ElemList[i].Value;
-			ElemList.erase(ElemList.begin()+i); i--;
+			if (ElemList.size()) { ElemList.erase(ElemList.begin()+i); i--; } else { std::cout << "Eval Error\n"; return 0; }
 			
 			num2 = ElemList[i].Value;
-			ElemList.erase(ElemList.begin()+i); i--;
+			if (ElemList.size()) { ElemList.erase(ElemList.begin()+i); i--; } else { std::cout << "Eval Error\n"; return 0; }
 			num1 = ElemList[i].Value;
+			
+			if (!ElemList.size()) { std::cout << "Eval Error\n"; return 0; }
 			
 			if (ope == ADD) { ElemList[i].Value = num1 + num2; }
 			if (ope == SUB) { ElemList[i].Value = num1 - num2; }
 		}
 		
 		i++;
+		
+		if (i > ElemList.size()) { std::cout << "Eval Error\n"; return 0; }
 	}
 	
 	return ElemList[0].Value;

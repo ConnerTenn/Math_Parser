@@ -25,7 +25,7 @@ int main()
 	
 	std::cout << "\n";
 	
-	ElemList = { Elem(1, 4), Elem(1, 7), Elem(2, ADD), Elem(1, 2) , Elem(2, SUB) };
+	ElemList = { Elem(1, 4), Elem(1, 7), Elem(2, ADD), Elem(1, 2), Elem(2, SUB) };
 	
 	
 	std::cout << "Result:" << Evaluate() << "\n";
