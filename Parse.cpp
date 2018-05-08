@@ -31,6 +31,18 @@ int Priority(char ope)
 	return -1;
 }
 
+bool HandleBracket()
+{
+	// Found complete set of brackets; Transfer operations between them from stack to list.
+		while (ElemStack.size() && ElemStack.back().Value != '(')
+		{
+			ElemList.push_back(ElemStack.back());
+			ElemStack.pop_back();
+		}
+		if (ElemStack.back().Value == '(') { ElemStack.pop_back(); } //Clean up remaining open Bracket
+		else { return false; }
+		return true;
+}
 
 void Start()
 {
@@ -73,12 +85,13 @@ void End()
 	{
 		if (Curr == ')')
 		{
-			while (ElemStack.size() && ElemStack.back().Value != '(')
-			{
-				ElemList.push_back(ElemStack.back());
-				ElemStack.pop_back();
-			}
-			if (ElemStack.back().Value == '(') { ElemStack.pop_back(); }
+			if (!HandleBracket()) { Func = Error; Func(); return; }
+		}
+		else if (Curr == '(') //There shouldnt be any remaining open brackets
+		{
+			Func = Error;
+			Func();
+			return;
 		}
 		else
 		{	
@@ -164,12 +177,7 @@ void Operator()
 	}
 	else if (Curr == ')')
 	{
-		while (ElemStack.size() && ElemStack.back().Value != '(')
-		{
-			ElemList.push_back(ElemStack.back());
-			ElemStack.pop_back();
-		}
-		if (ElemStack.back().Value == '(') { ElemStack.pop_back(); }
+		if (!HandleBracket()) { Func = Error; return; }
 	}
 	else
 	{

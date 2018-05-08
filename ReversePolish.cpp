@@ -34,6 +34,6 @@ int Evaluate()
 		if (i > (int)ElemList.size()) { std::cout << "Eval Error\n"; return 0; }
 	}
 	
-	return ElemList[0].Value;
+	return (ElemList.size() ? ElemList[0].Value : 0);
 }
 
