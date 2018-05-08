@@ -8,7 +8,7 @@ int main()
 	bool run = true;
 	std::string line;
 	
-	/*while (run)
+	while (run)
 	{		
 		std::getline(std::cin, line);
 		
@@ -19,18 +19,31 @@ int main()
 		else
 		{
 			Parse(line);
+			std::cout << "Result:" << Evaluate() << "\n";
 		}
 		
-	}*/
+	}
 	
-	std::cout << "\n";
+	//std::cout << "\n";
 	
-	ElemList = { Elem(1, 4), Elem(1, 7), Elem(2, ADD), Elem(1, 2), Elem(2, SUB) };
+	//ElemList = { Elem(1, 4), Elem(1, 7), Elem(2, ADD), Elem(1, 2), Elem(2, SUB) };
 	
-	
-	std::cout << "Result:" << Evaluate() << "\n";
 	
 	
 	
 	return 0;
 }
+
+/*
+
+2 * 4 - 3
+
+
+STACK:
+
+
+OUT:
+2 
+ 
+
+*/

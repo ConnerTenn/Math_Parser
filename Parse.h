@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include "ReversePolish.h"
 
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -23,8 +24,9 @@ void Parse(std::string line);
 extern void (* Func)();
 extern void (* LastFunc)();
 
+extern std::vector<Elem> ElemStack;
 extern std::string String;
-extern u64 Index;
+extern long Index;
 extern char Curr;
 extern char Next;
 extern int Acc;

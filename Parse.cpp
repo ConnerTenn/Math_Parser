@@ -4,16 +4,16 @@
 void (* Func)();
 void (* LastFunc)();
 
-int Acc;
-
+std::vector<Elem> ElemStack;
 std::string String;
-u64 Index = 0;
+long Index = 0;
 char Curr = 0;
 char Next = 0;
+int Acc;
 
 void Start()
 {
-	std::cout << "Start::" << Curr << "\n";
+	//std::cout << "Start \"" << Curr << "\" \"" << Next << "\"\n";
 	
 	LastFunc = Start;
 	
@@ -31,10 +31,12 @@ void Start()
 	}
 	else if (Next == '+')
 	{
+		ElemList.push_back(Elem(1,0));
 		Func = Add;
 	}
 	else if (Next == '-')
 	{
+		ElemList.push_back(Elem(1,0));
 		Func = Sub;
 	}
 	else
@@ -45,19 +47,25 @@ void Start()
 
 void End()
 {
-	std::cout << "End::" << Curr << "\n";
+	///std::cout << "End \"" << Curr << "\" \"" << Next << "\"\n";
 	
-	
+	if (ElemStack.size())
+	{
+		Error();
+	}
 }
 
 void Error()
 {
-	std::cout << "Error::" << Curr << "\n";
+	std::cout << "Parse Error \"" << Curr << "\" \"" << Next << "\"\n";
+	
+	ElemStack.clear();
+	ElemList.clear();
 }
 
 void White()
 {
-	std::cout << "White::" << Curr << "\n";
+	//std::cout << "White \"" << Curr << "\" \"" << Next << "\"\n";
 	
 	if (Next == -1)
 	{
@@ -87,7 +95,22 @@ void White()
 
 void Num()
 {
-	std::cout << "Num::" << Curr << "\n";
+	//std::cout << "Num \"" << Curr << "\" \"" << Next << "\"\n";
+	
+	if (LastFunc == Num)
+	{
+		return;
+	}
+	
+	ElemList.push_back(Elem(1, Curr-'0'));
+	
+	if (ElemStack.size())
+	{
+		ElemList.push_back(ElemStack.back());
+		ElemStack.pop_back();
+	}
+	
+	LastFunc = Num;
 	
 	if (Next == -1)
 	{
@@ -96,10 +119,6 @@ void Num()
 	else if (Next == ' ')
 	{
 		Func = White;
-	}
-	else if (Next - '0' >= 0 && Next - '0' <= 9)
-	{
-		Func = Num;
 	}
 	else if (Next == '+')
 	{
@@ -117,7 +136,11 @@ void Num()
 
 void Add()
 {
-	std::cout << "Add::" << Curr << "\n";
+	//std::cout << "Add \"" << Curr << "\" \"" << Next << "\"\n";
+	
+	ElemStack.push_back(Elem(2,ADD));
+	
+	LastFunc = Add;
 	
 	if (Next == -1)
 	{
@@ -126,12 +149,24 @@ void Add()
 	else if (Next == ' ')
 	{
 		Func = White;
+	}
+	else if (Next - '0' >= 0 && Next - '0' <= 9)
+	{
+		Func = Num;
+	}
+	else
+	{
+		Func = Error;
 	}
 }
 
 void Sub()
 {
-	std::cout << "Sub::" << Curr << "\n";
+	//std::cout << "Sub \"" << Curr << "\" \"" << Next << "\"\n";
+	
+	ElemStack.push_back(Elem(2,SUB));
+	
+	LastFunc = Sub;
 	
 	if (Next == -1)
 	{
@@ -140,6 +175,14 @@ void Sub()
 	else if (Next == ' ')
 	{
 		Func = White;
+	}
+	else if (Next - '0' >= 0 && Next - '0' <= 9)
+	{
+		Func = Num;
+	}
+	else
+	{
+		Func = Error;
 	}
 }
 
@@ -149,14 +192,17 @@ void Parse(std::string line)
 	String = line;
 	Func = Start;
 	Index = -1;
+	ElemStack.clear();
+	ElemList.clear();
 	
 	while(Func != End && Func != Error)
 	{
 		Curr = (Index >= 0 ? String[Index] : -1);
-		Next = (Index < String.length() - 1 ? String[Index+1] : -1);
-	
+		Next = (Index < (int)String.length() - 1 ? String[Index+1] : -1);
 	
 		Func();
+		
+		Index++;
 	}
 	Func();
 }
