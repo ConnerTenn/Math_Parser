@@ -16,10 +16,10 @@ double Evaluate()
 		if (ElemList[i].Type == 2)
 		{
 			ope = ElemList[i].Value;
-			if (ElemList.size()) { ElemList.erase(ElemList.begin()+i); i--; } else { std::cout << "Eval Error\n"; return 0; }
+			if (ElemList.size()) { ElemList.erase(ElemList.begin()+i); i--; } //else { std::cout << "Eval Error 4\n"; return 0; }
 			
 			num2 = ElemList[i].Value;
-			if (ElemList.size()) { ElemList.erase(ElemList.begin()+i); i--; } else { std::cout << "Eval Error\n"; return 0; }
+			if (ElemList.size()) { ElemList.erase(ElemList.begin()+i); i--; } //else { std::cout << "Eval Error 3\n"; return 0; }
 			num1 = ElemList[i].Value;
 			
 			if (!ElemList.size()) { std::cout << "Eval Error\n"; return 0; }
@@ -32,7 +32,7 @@ double Evaluate()
 		
 		i++;
 		
-		if (i > (int)ElemList.size()) { std::cout << "Eval Error\n"; return 0; }
+		//if (i > (int)ElemList.size()) { std::cout << "Eval Error 1\n"; return 0; }
 	}
 	
 	return (ElemList.size() ? ElemList[0].Value : 0);

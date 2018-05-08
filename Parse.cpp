@@ -82,15 +82,15 @@ void Start()
 
 void End()
 {
-	///std::cout << "End \"" << Curr << "\" \"" << Next << "\"\n";
+	//std::cout << "End \"" << Curr << "\" \"" << Next << "\"\n";
 	
 	while (ElemStack.size())
 	{
-		if (Curr == ')')
+		if (ElemStack.back().Value == ')')
 		{
 			if (!HandleBracket()) { Func = Error; Func(); return; }
 		}
-		else if (Curr == '(') //There shouldnt be any remaining open brackets
+		else if (ElemStack.back().Value == '(') //There shouldnt be any remaining open brackets
 		{
 			Func = Error;
 			Func();
@@ -252,8 +252,13 @@ void Operator()
 	{
 		Func = Num;
 	}
-	else if (Priority(Next) == 0)
+	else if (Priority(Next) == 0 || (Priority(Next) > 0 && Curr == ')'))
 	{
+		Func = Operator;
+	}
+	else if ((Next == '+' || Next == '-') && Curr == '(')
+	{
+		ElemList.push_back(Elem(1,0));
 		Func = Operator;
 	}
 	else
