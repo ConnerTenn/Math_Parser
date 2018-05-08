@@ -24,13 +24,14 @@ int Evaluate()
 			
 			if (!ElemList.size()) { std::cout << "Eval Error\n"; return 0; }
 			
-			if (ope == ADD) { ElemList[i].Value = num1 + num2; }
-			if (ope == SUB) { ElemList[i].Value = num1 - num2; }
+			if (ope == '+') { ElemList[i].Value = num1 + num2; }
+			if (ope == '-') { ElemList[i].Value = num1 - num2; }
+			if (ope == '*') { ElemList[i].Value = num1 * num2; }
 		}
 		
 		i++;
 		
-		if (i > ElemList.size()) { std::cout << "Eval Error\n"; return 0; }
+		if (i > (int)ElemList.size()) { std::cout << "Eval Error\n"; return 0; }
 	}
 	
 	return ElemList[0].Value;
