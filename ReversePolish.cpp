@@ -3,12 +3,12 @@
 
 std::vector<Elem> ElemList;
 
-Elem::Elem(int type, int value) : Type(type), Value(value) {}
+Elem::Elem(int type, double value) : Type(type), Value(value) {}
 
-int Evaluate()
+double Evaluate()
 {
-	int ope;
-	int num1, num2;
+	char ope;
+	double num1, num2;
 	
 	int i = 0;
 	while (ElemList.size() > 1)
@@ -27,6 +27,7 @@ int Evaluate()
 			if (ope == '+') { ElemList[i].Value = num1 + num2; }
 			if (ope == '-') { ElemList[i].Value = num1 - num2; }
 			if (ope == '*') { ElemList[i].Value = num1 * num2; }
+			if (ope == '/') { ElemList[i].Value = num1 / num2; }
 		}
 		
 		i++;

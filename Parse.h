@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <math.h>
 #include "ReversePolish.h"
 
 typedef unsigned char u8;
@@ -21,7 +22,9 @@ extern std::string String;
 extern long Index;
 extern char Curr;
 extern char Next;
-extern int Acc;
+
+extern double Acc;
+extern int DecPlace;
 
 
 #endif

@@ -15,11 +15,11 @@ extern std::vector<Elem> ElemList;
 struct Elem
 {
 	int Type;
-	int Value;
+	double Value;
 	
-	Elem(int type, int value);
+	Elem(int type, double value);
 };
 
-int Evaluate();
+double Evaluate();
 
 #endif

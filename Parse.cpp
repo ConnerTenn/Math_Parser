@@ -9,21 +9,24 @@ std::string String;
 long Index = 0;
 char Curr = 0;
 char Next = 0;
-int Acc;
+
+double Acc;
+int DecPlace;
 
 void Start();
 void End();
 void Error();
 void White();
 void Num();
+void Dec();
 void Operator();
 
 
 int Priority(char ope)
 {
-	char order[5][2] = { {'(', 0}, {')', 0}, {'+', 1}, {'-', 1}, {'*', 2} };
+	char order[6][2] = { {'(', 0}, {')', 0}, {'+', 1}, {'-', 1}, {'*', 2}, {'/', 2} };
 	
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		if (ope == order[i][0]) { return order[i][1]; }
 	}
@@ -34,14 +37,14 @@ int Priority(char ope)
 bool HandleBracket()
 {
 	// Found complete set of brackets; Transfer operations between them from stack to list.
-		while (ElemStack.size() && ElemStack.back().Value != '(')
-		{
-			ElemList.push_back(ElemStack.back());
-			ElemStack.pop_back();
-		}
-		if (ElemStack.back().Value == '(') { ElemStack.pop_back(); } //Clean up remaining open Bracket
-		else { return false; }
-		return true;
+	while (ElemStack.size() && ElemStack.back().Value != '(')
+	{
+		ElemList.push_back(ElemStack.back());
+		ElemStack.pop_back();
+	}
+	if (ElemStack.back().Value == '(') { ElemStack.pop_back(); } //Clean up remaining open Bracket
+	else { return false; }
+	return true;
 }
 
 void Start()
@@ -139,25 +142,69 @@ void Num()
 {
 	//std::cout << "Num \"" << Curr << "\" \"" << Next << "\"\n";
 	
-	if (LastFunc == Num)
-	{
-		return;
-	}
-	
-	ElemList.push_back(Elem(1, Curr-'0'));
+	if (LastFunc == Num) { Acc*=10; }
+	else { Acc = 0;}
+	Acc += Curr - '0';
 	
 	LastFunc = Num;
 	
 	if (Next == -1)
 	{
+		ElemList.push_back(Elem(1, Acc));
 		Func = End;
 	}
 	else if (Next == ' ')
 	{
+		ElemList.push_back(Elem(1, Acc));
 		Func = White;
+	}
+	else if (Next - '0' >= 0 && Next - '0' <= 9)
+	{
+		Func = Num;
+	}
+	else if (Next == '.')
+	{
+		Func = Dec;
+		Index++;
 	}
 	else if (Priority(Next) >= 0)
 	{
+		ElemList.push_back(Elem(1, Acc));
+		Func = Operator;
+	}
+	else
+	{
+		Func = Error;
+	}
+}
+
+void Dec()
+{
+	//std::cout << "Dec \"" << Curr << "\" \"" << Next << "\"\n";
+	if (LastFunc == Num) { DecPlace = 0; }
+	if (LastFunc == Dec) { Func = Error; return; }
+	DecPlace++;
+	Acc += (double)(Curr - '0') / pow(10.0, (double)DecPlace);
+	
+	LastFunc = Dec;
+	
+	if (Next == -1)
+	{
+		ElemList.push_back(Elem(1, Acc));
+		Func = End;
+	}
+	else if (Next == ' ')
+	{
+		ElemList.push_back(Elem(1, Acc));
+		Func = White;
+	}
+	else if (Next - '0' >= 0 && Next - '0' <= 9)
+	{
+		Func = Num;
+	}
+	else if (Priority(Next) >= 0)
+	{
+		ElemList.push_back(Elem(1, Acc));
 		Func = Operator;
 	}
 	else
