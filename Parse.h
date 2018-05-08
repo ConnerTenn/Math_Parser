@@ -11,14 +11,6 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef unsigned long u64;
 
-void Start();
-void End();
-void Error();
-void White();
-void Num();
-void Add();
-void Sub();
-
 void Parse(std::string line);
 
 extern void (* Func)();

@@ -12,13 +12,6 @@ class Operation;
 
 extern std::vector<Elem> ElemList;
 
-/*enum Operations
-{
-	ADD,
-	SUB,
-	MUL
-};*/
-
 struct Elem
 {
 	int Type;

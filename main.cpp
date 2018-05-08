@@ -19,7 +19,10 @@ int main()
 		else
 		{
 			Parse(line);
-			std::cout << "Result:" << Evaluate() << "\n";
+			
+			std::cout << "Reverse Polish Eqn: "; for (int i = 0; i < (int)ElemList.size(); i++) { if (ElemList[i].Type == 1) { std::cout << ElemList[i].Value << " "; } else { std::cout << (char)ElemList[i].Value << " "; } } std::cout << "\n";
+			
+			std::cout << "Result:" << Evaluate() << "\n\n";
 		}
 		
 	}
@@ -36,14 +39,14 @@ int main()
 
 /*
 
-2 * 4 - 3
+1 + 2 * 3
 
 
 STACK:
-
+S
 
 OUT:
-2 
+2 4 M 3 
  
 
 */

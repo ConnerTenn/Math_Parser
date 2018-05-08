@@ -11,6 +11,27 @@ char Curr = 0;
 char Next = 0;
 int Acc;
 
+void Start();
+void End();
+void Error();
+void White();
+void Num();
+void Operator();
+
+
+int Priority(char ope)
+{
+	char order[3][2] = { {'+', 0}, {'-', 0}, {'*', 1} };
+	
+	for (int i = 0; i < 3; i++)
+	{
+		if (ope == order[i][0]) { return order[i][1]; }
+	}
+	
+	return -1;
+}
+
+
 void Start()
 {
 	//std::cout << "Start \"" << Curr << "\" \"" << Next << "\"\n";
@@ -29,15 +50,10 @@ void Start()
 	{
 		Func = Num;
 	}
-	else if (Next == '+')
+	else if (Priority(Next) >= 0)
 	{
 		ElemList.push_back(Elem(1,0));
-		Func = Add;
-	}
-	else if (Next == '-')
-	{
-		ElemList.push_back(Elem(1,0));
-		Func = Sub;
+		Func = Operator;
 	}
 	else
 	{
@@ -49,9 +65,10 @@ void End()
 {
 	///std::cout << "End \"" << Curr << "\" \"" << Next << "\"\n";
 	
-	if (ElemStack.size())
+	while (ElemStack.size())
 	{
-		Error();
+		ElemList.push_back(ElemStack.back());
+		ElemStack.pop_back();
 	}
 }
 
@@ -79,13 +96,9 @@ void White()
 	{
 		Func = Num;
 	}
-	else if (Next == '+')
+	else if (Priority(Next) >= 0)
 	{
-		Func = Add;
-	}
-	else if (Next == '-')
-	{
-		Func = Sub;
+		Func = Operator;
 	}
 	else
 	{
@@ -104,12 +117,6 @@ void Num()
 	
 	ElemList.push_back(Elem(1, Curr-'0'));
 	
-	if (ElemStack.size())
-	{
-		ElemList.push_back(ElemStack.back());
-		ElemStack.pop_back();
-	}
-	
 	LastFunc = Num;
 	
 	if (Next == -1)
@@ -120,13 +127,9 @@ void Num()
 	{
 		Func = White;
 	}
-	else if (Next == '+')
+	else if (Priority(Next) >= 0)
 	{
-		Func = Add;
-	}
-	else if (Next == '-')
-	{
-		Func = Sub;
+		Func = Operator;
 	}
 	else
 	{
@@ -134,39 +137,20 @@ void Num()
 	}
 }
 
-void Add()
+void Operator()
 {
 	//std::cout << "Add \"" << Curr << "\" \"" << Next << "\"\n";
 	
-	ElemStack.push_back(Elem(2,ADD));
-	
-	LastFunc = Add;
-	
-	if (Next == -1)
+	while (ElemStack.size() && Priority((char)ElemStack.back().Value) >= Priority(Curr)) //If stack has greater or equal to priority than current
 	{
-		Func = End;
+		//Add stack to list
+		ElemList.push_back(ElemStack.back());
+		ElemStack.pop_back();
 	}
-	else if (Next == ' ')
-	{
-		Func = White;
-	}
-	else if (Next - '0' >= 0 && Next - '0' <= 9)
-	{
-		Func = Num;
-	}
-	else
-	{
-		Func = Error;
-	}
-}
-
-void Sub()
-{
-	//std::cout << "Sub \"" << Curr << "\" \"" << Next << "\"\n";
 	
-	ElemStack.push_back(Elem(2,SUB));
+	ElemStack.push_back(Elem(2,Curr));
 	
-	LastFunc = Sub;
+	LastFunc = Operator;
 	
 	if (Next == -1)
 	{
