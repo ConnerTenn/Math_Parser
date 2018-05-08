@@ -27,5 +27,7 @@ extern std::string String;
 extern u64 Index;
 extern char Curr;
 extern char Next;
+extern int Acc;
+
 
 #endif

@@ -3,12 +3,12 @@
 
 std::vector<Elem> ElemList;
 
-Elem::Elem(int type, double value) : Type(type), Value(value) {}
+Elem::Elem(int type, int value) : Type(type), Value(value) {}
 
-double Evaluate()
+int Evaluate()
 {
 	int ope;
-	double num1, num2;
+	int num1, num2;
 	
 	int i = 0;
 	while (ElemList.size() > 1)

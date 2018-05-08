@@ -21,11 +21,11 @@ enum Operations
 struct Elem
 {
 	int Type;
-	double Value;
+	int Value;
 	
-	Elem(int type, double value);
+	Elem(int type, int value);
 };
 
-double Evaluate();
+int Evaluate();
 
 #endif

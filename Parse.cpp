@@ -4,8 +4,7 @@
 void (* Func)();
 void (* LastFunc)();
 
-double Tot;
-double Acc;
+int Acc;
 
 std::string String;
 u64 Index = 0;
@@ -68,6 +67,22 @@ void White()
 	{
 		Func = White;
 	}
+	else if (Next - '0' >= 0 && Next - '0' <= 9)
+	{
+		Func = Num;
+	}
+	else if (Next == '+')
+	{
+		Func = Add;
+	}
+	else if (Next == '-')
+	{
+		Func = Sub;
+	}
+	else
+	{
+		Func = Error;
+	}
 }
 
 void Num()
@@ -81,6 +96,22 @@ void Num()
 	else if (Next == ' ')
 	{
 		Func = White;
+	}
+	else if (Next - '0' >= 0 && Next - '0' <= 9)
+	{
+		Func = Num;
+	}
+	else if (Next == '+')
+	{
+		Func = Add;
+	}
+	else if (Next == '-')
+	{
+		Func = Sub;
+	}
+	else
+	{
+		Func = Error;
 	}
 }
 
