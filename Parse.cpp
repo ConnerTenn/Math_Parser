@@ -21,9 +21,9 @@ void Operator();
 
 int Priority(char ope)
 {
-	char order[3][2] = { {'+', 0}, {'-', 0}, {'*', 1} };
+	char order[5][2] = { {'(', 0}, {')', 0}, {'+', 1}, {'-', 1}, {'*', 2} };
 	
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		if (ope == order[i][0]) { return order[i][1]; }
 	}
@@ -50,9 +50,13 @@ void Start()
 	{
 		Func = Num;
 	}
-	else if (Priority(Next) >= 0)
+	else if (Priority(Next) > 0)
 	{
 		ElemList.push_back(Elem(1,0));
+		Func = Operator;
+	}
+	else if (Priority(Next) == 0)
+	{
 		Func = Operator;
 	}
 	else
@@ -67,8 +71,20 @@ void End()
 	
 	while (ElemStack.size())
 	{
-		ElemList.push_back(ElemStack.back());
-		ElemStack.pop_back();
+		if (Curr == ')')
+		{
+			while (ElemStack.size() && ElemStack.back().Value != '(')
+			{
+				ElemList.push_back(ElemStack.back());
+				ElemStack.pop_back();
+			}
+			if (ElemStack.back().Value == '(') { ElemStack.pop_back(); }
+		}
+		else
+		{	
+			ElemList.push_back(ElemStack.back());
+			ElemStack.pop_back();		
+		}
 	}
 }
 
@@ -141,14 +157,31 @@ void Operator()
 {
 	//std::cout << "Add \"" << Curr << "\" \"" << Next << "\"\n";
 	
-	while (ElemStack.size() && Priority((char)ElemStack.back().Value) >= Priority(Curr)) //If stack has greater or equal to priority than current
-	{
-		//Add stack to list
-		ElemList.push_back(ElemStack.back());
-		ElemStack.pop_back();
-	}
 	
-	ElemStack.push_back(Elem(2,Curr));
+	if (Curr == '(')
+	{
+		ElemStack.push_back(Elem(2,'('));
+	}
+	else if (Curr == ')')
+	{
+		while (ElemStack.size() && ElemStack.back().Value != '(')
+		{
+			ElemList.push_back(ElemStack.back());
+			ElemStack.pop_back();
+		}
+		if (ElemStack.back().Value == '(') { ElemStack.pop_back(); }
+	}
+	else
+	{
+		while (ElemStack.size() && Priority((char)ElemStack.back().Value) >= Priority(Curr)) //If stack has greater or equal to priority than current
+		{
+			//Add stack to list
+			ElemList.push_back(ElemStack.back());
+			ElemStack.pop_back();
+		}
+		
+		ElemStack.push_back(Elem(2,Curr));
+	}
 	
 	LastFunc = Operator;
 	
@@ -163,6 +196,10 @@ void Operator()
 	else if (Next - '0' >= 0 && Next - '0' <= 9)
 	{
 		Func = Num;
+	}
+	else if (Priority(Next) == 0)
+	{
+		Func = Operator;
 	}
 	else
 	{
@@ -183,7 +220,7 @@ void Parse(std::string line)
 	{
 		Curr = (Index >= 0 ? String[Index] : -1);
 		Next = (Index < (int)String.length() - 1 ? String[Index+1] : -1);
-	
+		
 		Func();
 		
 		Index++;
