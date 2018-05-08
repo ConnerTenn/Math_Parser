@@ -18,12 +18,14 @@ void End();
 void Error();
 void White();
 void Num();
+void Dot();
 void Dec();
 void Operator();
 
 
 int Priority(char ope)
 {
+	//Priority map for each operator
 	char order[6][2] = { {'(', 0}, {')', 0}, {'+', 1}, {'-', 1}, {'*', 2}, {'/', 2} };
 	
 	for (int i = 0; i < 6; i++)
@@ -43,7 +45,7 @@ bool HandleBracket()
 		ElemStack.pop_back();
 	}
 	if (ElemStack.back().Value == '(') { ElemStack.pop_back(); } //Clean up remaining open Bracket
-	else { return false; }
+	else { return false; } //No open bracket found; Signal an error
 	return true;
 }
 
@@ -65,12 +67,12 @@ void Start()
 	{
 		Func = Num;
 	}
-	else if (Priority(Next) > 0)
+	else if (Priority(Next) > 0) //If an operator is next
 	{
-		ElemList.push_back(Elem(1,0));
+		ElemList.push_back(Elem(1,0)); //implicitly append a zero
 		Func = Operator;
 	}
-	else if (Priority(Next) == 0)
+	else if (Next == '(') //If the next character is an open bracket
 	{
 		Func = Operator;
 	}
@@ -84,9 +86,10 @@ void End()
 {
 	//std::cout << "End \"" << Curr << "\" \"" << Next << "\"\n";
 	
+	//Go through any remaining operators in the stack
 	while (ElemStack.size())
 	{
-		if (ElemStack.back().Value == ')')
+		if (ElemStack.back().Value == ')') //Clean up remaining Close brackets
 		{
 			if (!HandleBracket()) { Func = Error; Func(); return; }
 		}
@@ -98,6 +101,7 @@ void End()
 		}
 		else
 		{	
+			//Append the operators from the stack onto the list
 			ElemList.push_back(ElemStack.back());
 			ElemStack.pop_back();		
 		}
@@ -126,7 +130,8 @@ void White()
 	}
 	else if (Next - '0' >= 0 && Next - '0' <= 9)
 	{
-		Func = Num;
+		if (LastFunc == Num || LastFunc == Dec) { Func = Error; } //Error; number following number
+		else { Func = Num; } 
 	}
 	else if (Priority(Next) >= 0)
 	{
@@ -164,13 +169,24 @@ void Num()
 	}
 	else if (Next == '.')
 	{
-		Func = Dec;
-		Index++;
+		Func = Dot;
 	}
 	else if (Priority(Next) >= 0)
 	{
 		ElemList.push_back(Elem(1, Acc));
 		Func = Operator;
+	}
+	else
+	{
+		Func = Error;
+	}
+}
+
+void Dot()
+{
+	if (Next - '0' >= 0 && Next - '0' <= 9)
+	{
+		Func = Dec;
 	}
 	else
 	{
@@ -226,7 +242,7 @@ void Operator()
 	{
 		if (!HandleBracket()) { Func = Error; return; }
 	}
-	else
+	else if (LastFunc != Operator)
 	{
 		while (ElemStack.size() && Priority((char)ElemStack.back().Value) >= Priority(Curr)) //If stack has greater or equal to priority than current
 		{
@@ -236,6 +252,10 @@ void Operator()
 		}
 		
 		ElemStack.push_back(Elem(2,Curr));
+	}
+	else
+	{
+		Func = Error; return;
 	}
 	
 	LastFunc = Operator;
@@ -252,13 +272,13 @@ void Operator()
 	{
 		Func = Num;
 	}
-	else if (Priority(Next) == 0 || (Priority(Next) > 0 && Curr == ')'))
+	else if (Priority(Next) == 0 || (Priority(Next) > 0 && Curr == ')')) //Allow an open bracket or a non open bracket operator to follow closed bracket
 	{
 		Func = Operator;
 	}
-	else if ((Next == '+' || Next == '-') && Curr == '(')
+	else if ((Next == '+' || Next == '-') && Curr == '(') //Allow Add or Sub to follow an open bracket
 	{
-		ElemList.push_back(Elem(1,0));
+		ElemList.push_back(Elem(1,0)); // Append implicit 0
 		Func = Operator;
 	}
 	else
