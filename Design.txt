@@ -1,0 +1,28 @@
+
+
+1 * (2 + 3)
+
+STACK:
+* O + 
+
+OUT:
+1 2
+
+
+
+Character classes:
+	Number
+	Opeartor
+	Bracket
+		Open
+		Close
+	
+	Number > Opeartor
+	Number > Bracket
+	
+	Opeartor > Bracket
+	Opeartor > Bracket
+	
+	Open Bracket > Open Bracket
+	Open Bracket > Number
+	Colosed Bracket > Opeartor
