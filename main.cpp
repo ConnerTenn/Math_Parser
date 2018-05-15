@@ -1,7 +1,7 @@
 
-#include "Parse.h"
-#include "ReversePolish.h"
-
+//#include "Parse.h"
+//#include "ReversePolish.h"
+#include "Math.h"
 
 int main()
 {	
@@ -18,11 +18,11 @@ int main()
 		}
 		else
 		{
-			Parse(line);
+			//Parse(line);
 			
-			std::cout << "Reverse Polish Eqn: "; for (int i = 0; i < (int)ElemList.size(); i++) { if (ElemList[i].Type == 1) { std::cout << ElemList[i].Value << " "; } else { std::cout << (char)ElemList[i].Value << " "; } } std::cout << "\n";
+			//std::cout << "Reverse Polish Eqn: "; for (int i = 0; i < (int)ElemList.size(); i++) { if (ElemList[i].Type == 1) { std::cout << ElemList[i].Value << " "; } else { std::cout << (char)ElemList[i].Value << " "; } } std::cout << "\n";
 			
-			std::cout << "Result:" << Evaluate() << "\n\n";
+			//std::cout << "Result:" << Evaluate() << "\n\n";
 		}
 		
 	}
