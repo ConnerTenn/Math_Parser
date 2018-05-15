@@ -26,3 +26,11 @@ Character classes:
 	Open Bracket > Open Bracket
 	Open Bracket > Number
 	Colosed Bracket > Opeartor
+
+
+Program Structure:
+	2 linked lists. One for operators and one for numbers.
+	Character parsing in to symbols and numbers. Ignoring whitespace.
+	Functions for handling each class of element.
+	Any operation that would be moved onto the output list is computed immediately with the number list.
+	
