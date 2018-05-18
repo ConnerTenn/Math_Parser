@@ -1,7 +1,10 @@
 
-//#include "Parse.h"
-//#include "ReversePolish.h"
+#if VERSION==1
+#include "Parse.h"
+#include "ReversePolish.h"
+#elif VERSION==2
 #include "Math.h"
+#endif
 
 int main()
 {	
@@ -18,10 +21,16 @@ int main()
 		}
 		else
 		{
-			//std::cout << "Parsing:" << line << "\n";
+#if VERSION==1
+			Parse(line);
+			
+			std::cout << "Reverse Polish Eqn: "; for (int i = 0; i < (int)ElemList.size(); i++) { if (ElemList[i].Type == 1) { std::cout << ElemList[i].Value << " "; } else { std::cout << (char)ElemList[i].Value << " "; } } std::cout << "\n";
+			
+			std::cout << "Result:" << Evaluate() << "\n\n";
+#elif VERSION==2
 			int report, errorPos;
 			double result =  Calc((char *)line.c_str(), &report, &errorPos);
-			if (report) 
+			if (report)
 			{ 
 				std::cout << "\033[1;31m";
 				std::cout << "Error: " << report << "\n"; 
@@ -34,21 +43,10 @@ int main()
 			}
 			else { std::cout << "=" << result << "\n"; }
 			std::cout << "\n";
-			
-			//Parse(line);
-			
-			//std::cout << "Reverse Polish Eqn: "; for (int i = 0; i < (int)ElemList.size(); i++) { if (ElemList[i].Type == 1) { std::cout << ElemList[i].Value << " "; } else { std::cout << (char)ElemList[i].Value << " "; } } std::cout << "\n";
-			
-			//std::cout << "Result:" << Evaluate() << "\n\n";
+#endif
 		}
 		
 	}
-	
-	//std::cout << "\n";
-	
-	//ElemList = { Elem(1, 4), Elem(1, 7), Elem(2, ADD), Elem(1, 2), Elem(2, SUB) };
-	
-	
 	
 	
 	return 0;
