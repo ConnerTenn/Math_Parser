@@ -62,7 +62,7 @@ int Eval(char ope)
 	
 	double result = 0;
 	
-	std::cout << "ope:" << ope << "\n";
+	//std::cout << "ope:" << ope << "\n";
 	
 	switch (ope)
 	{
@@ -118,6 +118,8 @@ int Precidance(char ope)
 
 double Calc(char *line, int *report = 0, int *errorPos = 0)
 {
+	bool negative = false;
+	
 	States State = NUL, PrevState = NUL;
 	
 	if (report) { *report = 0; }
@@ -174,25 +176,29 @@ double Calc(char *line, int *report = 0, int *errorPos = 0)
 				i++;
 			}
 			
-			std::cout<< "Acc:" << Accumulator << "\n";
-			ValueStack.Push(Accumulator);
+			//std::cout<< "Acc:" << Accumulator << "\n";
+			ValueStack.Push( (negative ? -1 : 1) * Accumulator);
+			negative = false;
 		}
 		else if (line[i] == '+' || line[i] == '-' || line[i] == '*' || line[i] == '/')
 		{	
 			State = OPE;
 			
-			char ope = line[i];
+			//char ope = line[i];
 			
-			if (line[i] == '-' && (PrevState == NUL || PrevState == OBR || (PrevState == OPE && (line[i-1] == '-' || line[i-1] == '+')))) { ope = 'N'; std::cout << "N\n"; }
-			else if (line[i] == '+' && (PrevState == NUL || PrevState == OBR || (PrevState == OPE && (line[i-1] == '-' || line[i-1] == '+')))) { ope = 'P'; std::cout << "P\n"; }
-			else if (PrevState == NUL || PrevState == OPE || PrevState == OBR) { return errorFunc(1, i); }			
-			
-			if (OperatorStack.Last && Precidance(OperatorStack.Back()) >= Precidance(line[i]) && ope != 'P' && ope != 'N')
+			if (line[i] == '-' && PrevState != NUM && PrevState != CBR) { negative = !negative; }
+			else if (line[i] == '+' && PrevState != NUM && PrevState != CBR) { }
+			else
 			{
-				if (!Eval(OperatorStack.Back())) { return errorFunc(2, i); }
-				OperatorStack.Pop();
+				if (PrevState == NUL || PrevState == OPE || PrevState == OBR) { return errorFunc(1, i); }			
+			
+				if (OperatorStack.Last && Precidance(OperatorStack.Back()) >= Precidance(line[i]))
+				{
+					if (!Eval(OperatorStack.Back())) { return errorFunc(2, i); }
+					OperatorStack.Pop();
+				}
+				OperatorStack.Push(line[i]);
 			}
-			OperatorStack.Push(ope);
 			
 			i++;
 		}
