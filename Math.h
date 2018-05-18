@@ -58,29 +58,46 @@ enum States
 
 int Eval(char ope)
 {
-	if (!ValueStack.Last) { return 0; }
-	double num1 = ValueStack.Pop();
-	if (!ValueStack.Last) { return 0; }
-	double num2 = ValueStack.Pop();
+	double num1, num2;
+	
 	double result = 0;
 	
-	std::cout << "eval:" << num1 << ope << num2 << "\n";
+	std::cout << "ope:" << ope << "\n";
 	
 	switch (ope)
 	{
 	case '+':
+		if (!ValueStack.Last) { return 0; } num2 = ValueStack.Pop();
+		if (!ValueStack.Last) { return 0; } num1 = ValueStack.Pop();
 		result = num1+num2;
 		break;
 	case '-':
+		if (!ValueStack.Last) { return 0; } num2 = ValueStack.Pop();
+		if (!ValueStack.Last) { return 0; } num1 = ValueStack.Pop();
 		result = num1-num2;
 		break;
 	case '*':
+		if (!ValueStack.Last) { return 0; } num2 = ValueStack.Pop();
+		if (!ValueStack.Last) { return 0; } num1 = ValueStack.Pop();
 		result = num1*num2;
 		break;
 	case '/':
+		if (!ValueStack.Last) { return 0; } num2 = ValueStack.Pop();
+		if (!ValueStack.Last) { return 0; } num1 = ValueStack.Pop();
 		result = num1/num2;
 		break;
+	case 'N':
+		if (!ValueStack.Last) { return 0; } num1 = ValueStack.Pop();
+		result = -num1;
+		break;
+	case 'P':
+		if (!ValueStack.Last) { return 0; } num1 = ValueStack.Pop();
+		result = num1;
+		break;
 	}
+	
+	std::cout << "eval:" << num1 << " " << ope << " " << num2 << "\n";
+	
 	ValueStack.Push(result);
 	return 1;
 }
@@ -89,9 +106,9 @@ int Eval(char ope)
 int Precidance(char ope)
 {
 	//Priority map for each operator
-	char order[6][2] = { {'(', 0}, {')', 0}, {'+', 1}, {'-', 1}, {'*', 2}, {'/', 2} };
+	char order[8][2] = { {'(', 0}, {')', 0}, {'+', 1}, {'-', 1}, {'P', 1}, {'N', 1}, {'*', 2}, {'/', 2} };
 	
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 8; i++)
 	{
 		if (ope == order[i][0]) { return order[i][1]; }
 	}
@@ -157,20 +174,25 @@ double Calc(char *line, int *report = 0, int *errorPos = 0)
 				i++;
 			}
 			
-			//std::cout<< "Acc:" << Accumulator << "\n";
+			std::cout<< "Acc:" << Accumulator << "\n";
 			ValueStack.Push(Accumulator);
 		}
 		else if (line[i] == '+' || line[i] == '-' || line[i] == '*' || line[i] == '/')
 		{	
 			State = OPE;
 			
-			if (PrevState == NUL || PrevState == OPE || PrevState == OBR) { return errorFunc(1, i); }
+			char ope = line[i];
 			
-			if (OperatorStack.Last && Precidance(OperatorStack.Back()) >= Precidance(line[i]))
+			if (line[i] == '-' && (PrevState == NUL || PrevState == OBR || (PrevState == OPE && (line[i-1] == '-' || line[i-1] == '+')))) { ope = 'N'; std::cout << "N\n"; }
+			else if (line[i] == '+' && (PrevState == NUL || PrevState == OBR || (PrevState == OPE && (line[i-1] == '-' || line[i-1] == '+')))) { ope = 'P'; std::cout << "P\n"; }
+			else if (PrevState == NUL || PrevState == OPE || PrevState == OBR) { return errorFunc(1, i); }			
+			
+			if (OperatorStack.Last && Precidance(OperatorStack.Back()) >= Precidance(line[i]) && ope != 'P' && ope != 'N')
 			{
-				if (!Eval(OperatorStack.Pop())) { errorFunc(2, i); }
+				if (!Eval(OperatorStack.Back())) { return errorFunc(2, i); }
+				OperatorStack.Pop();
 			}
-			OperatorStack.Push(line[i]);
+			OperatorStack.Push(ope);
 			
 			i++;
 		}

@@ -8,15 +8,6 @@ int main()
 	bool run = true;
 	std::string line;
 	
-	for (int i = 0; i < 10; i++)
-	{
-		for (int j = 0; j < 10; j++)
-		{
-			std::cout <<  (((i%2 + j%2)%2) ? "\33[42m" : "\33[44m") << " "; 
-		}
-		std::cout << "\33[0m\n";
-	}
-	
 	while (run)
 	{		
 		std::getline(std::cin, line);
@@ -38,10 +29,11 @@ int main()
 				{
 					std::cout << line << "\n";
 					std::cout << std::string(errorPos, ' ') << "^\n";
-					std::cout << "\033[0m";
 				}
+				std::cout << "\033[0m";
 			}
-			else { std::cout << result << "\n"; }
+			else { std::cout << "=" << result << "\n"; }
+			std::cout << "\n";
 			
 			//Parse(line);
 			
