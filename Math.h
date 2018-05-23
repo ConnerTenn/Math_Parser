@@ -61,16 +61,17 @@ int Eval(char ope, Stack<double> &valueStack)
 	
 	//std::cout << "eval:" << num1 << " " << ope << " " << num2 << " = " << result << "\n";
 	valueStack.Push(result); //Add result back to the stack
-	return 1;
+	return 1; //No error
 }
 
 
 int Precedence(char ope)
 {
 	//Priority map for each operator
-	char order[9][2] = { {'(', 0}, {')', 0}, {'+', 1}, {'-', 1}, {'P', 1}, {'N', 1}, {'*', 2}, {'/', 2}, {'^', 3} };
+	const int len = 9;
+	char order[len][2] = { {'(', 0}, {')', 0}, {'+', 1}, {'-', 1}, {'P', 1}, {'N', 1}, {'*', 2}, {'/', 2}, {'^', 3} };
 	
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < len; i++)
 	{
 		if (ope == order[i][0]) { return order[i][1]; }
 	}
@@ -87,8 +88,10 @@ double Calc(char *line, int *report = 0, int *errorPos = 0)
 	bool negative = false;
 	States State = NUL, PrevState = NUL;
 	
+	//Cleans up any remaining memory from the stacks
+	auto cleanup = [&](){ while (OperatorStack.Last) { OperatorStack.Pop();} while(ValueStack.Last){ValueStack.Pop();} };
 	//Function that encapsulates assigning report and errorPos, and checking if the variables are being used 
-	auto errorFunc = [&](int reportVal, int pos)->int{ if (report) { *report = reportVal; } if (errorPos) { *errorPos = pos; } return 0; };
+	auto errorFunc = [&](int reportVal, int pos)->int{ cleanup(); if (report) { *report = reportVal; } if (errorPos) { *errorPos = pos; } return 0; };
 	
 	//Initilize values if being used
 	if (report) { *report = 0; }
@@ -105,7 +108,7 @@ double Calc(char *line, int *report = 0, int *errorPos = 0)
 			State = NUM;
 			double Accumulator = 0;
 			int DecimalPlace = -1;
-			int numState = 0; //1:integer, 2:decimal
+			char numState = 0; //1:integer, 2:decimal
 			
 			//Check for correct syntax
 			if (PrevState == NUM) { return errorFunc(1, i); }
@@ -143,6 +146,7 @@ double Calc(char *line, int *report = 0, int *errorPos = 0)
 			ValueStack.Push( (negative ? -1 : 1) * Accumulator);
 			negative = false;
 		}
+		//Parse operators
 		else if (Precedence(line[i]) > 0)
 		{
 			State = OPE;
@@ -167,6 +171,7 @@ double Calc(char *line, int *report = 0, int *errorPos = 0)
 			
 			i++;
 		}
+		//handle open bracket
 		else if (line[i] == '(')
 		{
 			State = OBR;
@@ -178,6 +183,7 @@ double Calc(char *line, int *report = 0, int *errorPos = 0)
 			OperatorStack.Push('(');
 			i++;
 		}
+		//handle close bracket
 		else if (line[i] == ')')
 		{
 			State = CBR;
@@ -208,6 +214,7 @@ double Calc(char *line, int *report = 0, int *errorPos = 0)
 	
 	double result = ValueStack.Pop();
 	if (ValueStack.Last) { return errorFunc(3, -1); } //Error should never occur; syntax checking should catch this error before this point
+	cleanup();
 	return result;
 }
 
